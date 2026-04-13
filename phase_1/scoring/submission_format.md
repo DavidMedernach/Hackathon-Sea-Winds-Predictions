@@ -80,7 +80,7 @@ $$
 $$
 
 where
-- **arc width** $w = (\text{dir\_95} - \text{dir\_05}) \bmod 360$, in degrees — the counter-clockwise arc length from `dir_05` to `dir_95`;
+- **arc width** $$w = (\text{dir\_95} - \text{dir\_05}) \bmod 360$$, in degrees — the counter-clockwise arc length from `dir_05` to `dir_95`;
 - **inside-ness** holds when $(\text{actual} - \text{dir\_05}) \bmod 360 \le w$;
 - **miss distance** $d_{\text{miss}}$ is the shorter circular distance from the actual direction to the nearer endpoint (`dir_05` or `dir_95`), with wrap-around handled.
 
