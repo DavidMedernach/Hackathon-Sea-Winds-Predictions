@@ -2,13 +2,6 @@
 
 Your submission is a single CSV file named **`predictions.csv`**, packaged in a ZIP for upload to Codabench.
 
-The file contains two kinds of rows distinguished by a leading **`type`** column:
-
-- `type = "grid"` — gridded predictions over the reanalysis domain, across 7 vertical levels
-- `type = "station"` — per-station predictions at 15 observation sites (8 in North Sea, 7 in East China Sea)
-
-Both row types are required. You are expected to submit **independent predictions** for the two categories — a station is not scored against its nearest grid point, it is scored directly against station-ID-matched observations.
-
 ---
 
 ## Column schema
@@ -35,16 +28,6 @@ Both row types are required. You are expected to submit **independent prediction
 
 ---
 
-## Constraints
-
-- `q05 ≤ q50 ≤ q95` must hold for every row.
-- Wind speeds must be non-negative.
-- `dir_05`, `dir_50`, `dir_95` must all be in `[0, 360)`.
-- The direction interval is the arc going counter-clockwise (increasing angle, mod 360) from `dir_05` to `dir_95`. The starting kits emit it as `dir_05 = dir_50 - offset`, `dir_95 = dir_50 + offset` (both mod 360) — the arc is therefore symmetric around `dir_50`. You can diverge from this convention as long as the intended arc is the counter-clockwise one from `dir_05` to `dir_95`.
-- `type` values must be exactly `"grid"` or `"station"` (case-insensitive).
-
----
-
 ## Scoring — 36-dimensional rank-based evaluation
 
 Your submission is scored on **36 independent dimensions**, defined by the cross-product:
@@ -59,19 +42,15 @@ Your submission is scored on **36 independent dimensions**, defined by the cross
 
 That gives **3 × 2 × 3 × 2 = 36** dimensions. The column-key convention is `{problem}_{gt}_d{horizon}_{region}`, e.g. `speed_surface_d7_ns` or `dir_pressure_d14_ecs`. The leaderboard publishes all 36 raw numeric scores plus two aggregate columns:
 
-- **`mean_rank`** — the mean of your per-dimension ranks across submissions. Computed by a separate post-processor that runs periodically. **This is the final ranking metric for the competition.**
-
 ### Per-dimension metrics
 
-Both metrics are **interval scores on the 90% prediction interval** — the hackathon is about *uncertainty-aware* ML, so teams must produce calibrated bounds for both speed and direction, not just point estimates.
+Both metrics are **interval scores on the 90% prediction interval** .
 
 **Speed — Winkler interval score** on `(q05, q95)`:
 
 $$
 \text{WS} = (q_{95} - q_{05}) + \tfrac{2}{\alpha}\max(0, q_{05} - y) + \tfrac{2}{\alpha}\max(0, y - q_{95}), \quad \alpha = 0.1
 $$
-
-Units: m/s. Lower is better.
 
 **Direction — circular Winkler score** on `(dir_05, dir_95)`:
 
@@ -86,3 +65,7 @@ $$
 1. Produce `predictions.csv` (one of the starting kits generates it for you).
 2. Zip it: `zip submission.zip predictions.csv`
 3. Upload `submission.zip` to Codabench.
+
+## Final Scoring
+
+- **`mean_rank`** — the mean of your per-dimension ranks across submissions is computed by a separate post-processor that runs periodically. **This is the final ranking metric for the competition.**
