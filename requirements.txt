@@ -1,0 +1,32 @@
+# Install with: pip install -r requirements.txt
+
+# Core
+numpy>=1.26
+pandas>=2.1
+pyarrow>=14.0
+matplotlib>=3.8
+seaborn>=0.13
+
+# Machine Learning
+scikit-learn>=1.4
+lightgbm>=4.3
+catboost>=1.2
+xgboost>=2.0
+
+# Deep Learning (for 2c_starting_kit_deep_learning.ipynb)
+torch>=2.2
+
+# Interpretability (for 2e_starting_kit_explainable.ipynb)
+interpret>=0.5
+
+# Maps (for 3c_station_vs_reanalysis.ipynb)
+cartopy>=0.22
+
+# Data handling
+xarray>=2024.1
+netcdf4>=1.6
+
+# Notebooks
+jupyter>=1.0
+nbconvert>=7.0
+ipykernel>=6.0
