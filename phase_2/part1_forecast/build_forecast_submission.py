@@ -77,4 +77,9 @@ def write_submission(df: pd.DataFrame, path) -> None:
     if str(path).endswith(".parquet"):
         df.to_parquet(path, index=False)
     else:
-        df.to_csv(path, index=False)
+        out = df.copy()                       # CSV (Codabench scores CSV): round to keep it light
+        out["latitude"] = out["latitude"].round(2)
+        out["longitude"] = out["longitude"].round(2)
+        for c in ("q05", "q50", "q95", "dir_05", "dir_50", "dir_95"):
+            out[c] = out[c].round(3)
+        out.to_csv(path, index=False)
