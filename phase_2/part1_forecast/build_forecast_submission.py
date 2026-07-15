@@ -80,6 +80,8 @@ def write_submission(df: pd.DataFrame, path) -> None:
         out = df.copy()                       # CSV (Codabench scores CSV): round to keep it light
         out["latitude"] = out["latitude"].round(2)
         out["longitude"] = out["longitude"].round(2)
-        for c in ("q05", "q50", "q95", "dir_05", "dir_50", "dir_95"):
+        for c in ("q05", "q50", "q95"):
             out[c] = out[c].round(3)
+        for c in ("dir_05", "dir_50", "dir_95"):
+            out[c] = out[c].round(3) % 360      # keep directions in [0, 360) after rounding
         out.to_csv(path, index=False)
