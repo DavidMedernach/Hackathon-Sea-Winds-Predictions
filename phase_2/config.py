@@ -111,6 +111,8 @@ def hres_parquets() -> list[Path]:
         "train/hres/*.parquet",                                # Phase-2 ship
         "train/hres_north_sea.parquet",                        # Phase-1 ship
         "phase1_dataset/train/hres_north_sea.parquet",         # Phase-1 unzipped as a dir
+        "inference/window_*/context_hres_north_sea.parquet",   # eval-year driver (issued at context_end)
+        "build/phase2_dataset/inference/window_*/context_hres_north_sea.parquet",  # dev
         "data/wind_data/nwp/north_sea_hres_forecasts.parquet", # repo merged (dev)
         "data/wind_data/nwp/north_sea_hres_2016_2018.parquet", # repo back-fill (dev)
     ]

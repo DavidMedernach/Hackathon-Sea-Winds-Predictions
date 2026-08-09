@@ -23,7 +23,7 @@ TRAIN_YEARS: tuple[int, ...] = (2016, 2017, 2018, 2019, 2020)
 EVAL_PUBLIC_YEAR: int = 2021   # live leaderboard
 EVAL_FINAL_YEAR: int = 2022    # last-week final (limits probing)
 SITING_YEARS: tuple[int, ...] = ()   # secret dataset - siting year withheld in the participant kit
-EVAL_YEAR: int = EVAL_PUBLIC_YEAR   # back-compat: the currently-active forecast eval
+EVAL_YEAR: int = EVAL_PUBLIC_YEAR   # back-compat constant; eval_windows() follows the installed inference windows
 
 # All target years withheld from participants (any eval/siting year).
 HIDDEN_YEARS: tuple[int, ...] = (EVAL_PUBLIC_YEAR, EVAL_FINAL_YEAR, *SITING_YEARS)
@@ -164,10 +164,28 @@ _BASE_WINDOWS = json.loads('''[
 ]''')
 
 
+def _installed_windows_year() -> int | None:
+    """Year of the inference windows actually installed in the dataset root
+    (read from window_1/metadata.json), so the kit follows the eval-year swap
+    automatically. None if the windows are absent or unreadable."""
+    try:
+        import config
+        root = config.inference_root()
+        if root is None:
+            return None
+        meta = json.loads((root / "window_1" / "metadata.json").read_text())
+        return int(str(meta["context_start"])[:4])
+    except Exception:
+        return None
+
+
 def eval_windows(year: int | None = None) -> list[dict]:
-    """The 8 rolling inference windows for ``year`` (default = public eval 2021),
-    re-dated from the base-year spec. Self-contained (no organiser files)."""
-    year = EVAL_PUBLIC_YEAR if year is None else year
+    """The 8 rolling inference windows for ``year``, re-dated from the base-year
+    spec. Default: the year of the installed inference windows (so replacing the
+    ``inference/`` folder with the final-eval set re-dates everything), falling
+    back to the public eval year. Self-contained (no organiser files)."""
+    if year is None:
+        year = _installed_windows_year() or EVAL_PUBLIC_YEAR
     return _shift_windows(_BASE_WINDOWS, year)
 
 
